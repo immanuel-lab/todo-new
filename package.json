@@ -10,9 +10,12 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@faker-js/faker": "^8.2.0",
     "axios": "^1.5.1",
+    "faker": "^6.6.6",
     "random-js": "^2.1.0",
     "react": "^18.2.0",
+    "react-calendar": "^4.6.1",
     "react-dom": "^18.2.0",
     "react-icons": "^4.11.0"
   },

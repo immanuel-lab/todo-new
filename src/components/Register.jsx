@@ -2,11 +2,12 @@ import React,{useState,useEffect} from 'react';
 import axios from 'axios'; 
 
 function Register() {
-  const initialValues={'username':'','email':'','phoneNumber':'','password':'','confirmPassword':''}
+  const initialValues={'username':'','email':'','phone_number':'','password':'','confirmPassword':''}
   const[InputValues,setInputValues]=useState(initialValues);
   const[InputErrors,setInputErrors]=useState(InputValues);
   const [successMessage, setSuccessMessage] = useState('');
 
+  const [errorMessage, setErrorMessage] = useState('');
 
 const handleChange=(e)=>{
   const {name,value}=e.target
@@ -30,9 +31,9 @@ if(InputValues.email.trim()===''){
   errors.email='email is required'
 } 
 
-if(InputValues.phoneNumber.trim()===''){
+if(InputValues.phone_number.trim()===''){
   errors.phoneNumber='phone number  is required'
-}else if(!phoneNumberPattern.test(InputValues.phoneNumber)){
+}else if(!phoneNumberPattern.test(InputValues.phone_number)){
   errors.phoneNumber="please enter a valid phone number"
 }
   if (InputValues.password.trim()===''){
@@ -52,13 +53,13 @@ if(InputValues.password.length<8){
 const requestData = {
   username: InputValues.username,
   email: InputValues.email,
-  phoneNumber: InputValues.phoneNumber,
+  phone_number: InputValues.phone_number,
   password: InputValues.password,
 };
   
     if (Object.keys(InputErrors).length === 0) {
       axios
-        .post('http://localhost:8000/register/', requestData) // Send a POST request to your server
+        .post('http://localhost:8000/register/', requestData) // 
         .then((response) => {
           console.log('Response from server:', response.data);
           setSuccessMessage('User successfully registered');
@@ -66,10 +67,21 @@ const requestData = {
         })
         .catch((error) => {
           console.error('Error:', error);
-          // Handle error here, e.g., display an error message to the user
-        });
-    }
+          if (error.response && error.response.data) {
+            // Extract the error message from the response
+            const errorMessage =
+              error.response.data.message ||
+              (error.response.data.email && error.response.data.email[0]) ||
+              (error.response.data.username && error.response.data.username[0]) ||
+              'An error occurred during registration.';
   
+            setErrorMessage(errorMessage);
+          } else {
+            setErrorMessage('An error occurred during registration.');
+          }
+         
+        });
+      }
   else {
       setInputErrors(errors);
     }
@@ -79,19 +91,21 @@ const requestData = {
 }
 
 
+
+
 useEffect(() => {
-  if (successMessage) {
-    // Automatically hide the success message after 5 seconds
+  if (successMessage || errorMessage) {
+    // Automatically hide the success or error message after 5 seconds
     const timer = setTimeout(() => {
       setSuccessMessage('');
+      setErrorMessage('');
     }, 5000);
-
     return () => {
-      // Cleanup the timer when the component unmounts or when successMessage changes
+      // Cleanup the timer when the component unmounts or when messages change
       clearTimeout(timer);
     };
   }
-}, [successMessage]);
+}, [successMessage, errorMessage]);
 
   return (
     <>
@@ -99,6 +113,11 @@ useEffect(() => {
 
       <div className='bg-cyan-700 w-full min-h-screen flex justify-center items-center'>
         <div className='w-full max-w-lg p-4 rounded-lg bg-purple-800 mt-5 mb-7'>
+
+        {errorMessage && (
+            <div className='bg-red-500 text-white p-2 mb-4 text-center'>
+              {errorMessage}  
+              </div>)}
         
         {successMessage && 
             <div className="bg-green-500 text-white p-2 mb-4 text-center">
@@ -145,15 +164,15 @@ useEffect(() => {
               </label>
               <input
                 className="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
-               name='phoneNumber'
+               name='phone_number'
                 id="phoneNumber"
                 type='tel'
                 placeholder='Enter your phone number'
-                value={InputValues.phoneNumber}
+                value={InputValues.phone_number}
                 onChange={handleChange}
               />
             </div>
-            {InputErrors.phoneNumber && <p className='text-red-400'>{InputErrors.phoneNumber}</p> }
+            {InputErrors.phone_number && <p className='text-red-400'>{InputErrors.phone_number}</p> }
 
             <div className="mb-4">
               <label className="block text-white text-sm font-bold mb-2" htmlFor="password">
@@ -207,3 +226,5 @@ useEffect(() => {
 }
 
 export default Register;
+
+

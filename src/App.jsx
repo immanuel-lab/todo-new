@@ -3,7 +3,7 @@ import Navbar from './components/Navbar'
 // import Practise from './components/Practise'
 // import Welcome from './components/Welcome'
 // import Landing from './pages/Landing'
-// import Register from './components/Register'
+import Register from './components/Register'
 // import Login from './components/Register'
 // import Todo from './components/Todo'
 // import Todolist from './pages/Todolist'
@@ -15,7 +15,14 @@ import Navbar from './components/Navbar'
 // import Accordion from './practise/Accordion'
 // import Transform from './practise/Transform'
 // import Background from './practise/Background'
-import Random1 from './practise/Random1'
+// import Random1 from './practise/Random1'
+// import Time from './practise/Time'
+// import  Faker from './practise/Faker'
+// import Transition from './practise/Transition'
+// import Memoise from './practise/Memoise'
+// import Maps from './practise/Maps'
+// import MyCalendar from './practise/MyCalender'
+
 
 
 function App() {
@@ -41,15 +48,22 @@ function App() {
 {/* <Landing/>  */}
 
 
-{/* <Register/> */}
+<Register/>
 {/* <Login/> */}
 
    {/* <Welcome/> */}
 
 
 {/* <Navbar/> */}
-<Random1/>
+{/* <Random1/> */}
+{/* <Time/> */}
+{/* <Faker/> */}
 
+{/* <Transition/> */}
+
+{/* <Memoise/> */}
+{/* <Maps/> */}
+{/* <MyCalendar/> */}
     </>
   )
 }
