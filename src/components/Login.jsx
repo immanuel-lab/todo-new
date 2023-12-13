@@ -1,4 +1,5 @@
 import React,{useState} from 'react'
+import axios from 'axios';
 
 function Login() {
 
@@ -14,7 +15,7 @@ const handleChange=(e)=>{
 
 }
 
-const handleSubmit=(e)=>{
+const handleSubmit=async(e)=>{
   e.preventDefault();
   // validation
   const errors={}
@@ -24,14 +25,41 @@ const handleSubmit=(e)=>{
   if (formValues.password.trim()===''){
     errors.password="password is required"
   }
-  if(Object.keys(errors).length===0){
-    console.log('form Data=',formValues)
-  }
-  else{
-    setFormError(errors)
-  }
+  
+   // Add CORS headers
+  //  axios.defaults.headers.common['Access-Control-Allow-Origin'] = '*';
+  //  axios.defaults.headers.common['Content-Type'] = 'application/json';
+  
+    if (Object.keys(errors).length === 0) {
+      try {
+        // Make a POST request to your authentication endpoint
+        const response = await axios.post('http://127.0.0.1:8000/token/', formValues)
+       
+        console.log('Response:', response.data)
 
-}
+        
+        // const { access, refresh } =response.data
+
+        const access_token = response.data.access;
+const refresh_token =response.data.refresh;
+
+        // Store the tokens securely (e.g., in localStorage)
+        localStorage.setItem('accessToken', access_token);
+        localStorage.setItem('refreshToken', refresh_token);
+
+        // Redirect or perform other actions on successful login
+        console.log('Login successful');
+      } catch (error) {
+        console.error('Login failed', error);
+      }
+    } else {
+      setFormError(errors);
+    }
+  };
+  
+
+
+
 // bg-gradient-to-bl from-blue-500 to-green-400
 
   return (
@@ -66,7 +94,7 @@ const handleSubmit=(e)=>{
 
     </>
   )
-}
+  }
 
 export default Login
 
@@ -75,86 +103,3 @@ export default Login
 
 
 
-// import React, { useState } from 'react';
-// import Button from './Button';
-
-// function Login() {
-//   // Define state variables for form inputs and validation errors
-//   const [formData, setFormData] = useState({
-//     username: '',
-//     password: '',
-//   });
-
-//   const [errors, setErrors] = useState({
-//     username: '',
-//     password: '',
-//   });
-
-//   // Function to handle form input changes
-//   const handleInputChange = (e) => {
-//     const { name, value } = e.target;
-//     setFormData({
-//       ...formData,
-//       [name]: value,
-//     });
-//   };
-
-//   // Function to handle form submission
-//   const handleSubmit = (e) => {
-//     e.preventDefault();
-//     // Perform validation here
-//     const newErrors = {};
-//     if (formData.username.trim() === '') {
-//       newErrors.username = 'Username is required';
-//     }
-//     if (formData.password.trim() === '') {
-//       newErrors.password = 'Password is required';
-//     }
-
-//     if (Object.keys(newErrors).length === 0) {
-//       // Form is valid, you can submit it here
-//       console.log('Form submitted:', formData);
-//     } else {
-//       // There are validation errors, update the errors state
-//       setErrors(newErrors);
-//     }
-//   };
-
-//   return (
-//     <div className='flex flex-col justify-center items-center w-full h-screen bg-gradient-to-bl from-blue-400 to-purple-500'>
-//       <h1 className='text-5xl uppercase mb-10 font-semibold text-white'>login</h1>
-//       <form
-//         className='border-8 border-purple-600 rounded-lg bg-purple-600 bg-opacity-80 px-12 py-16 flex flex-col justify-center items-center'
-//         onSubmit={handleSubmit}
-//       >
-//         <input
-//           type='text'
-//           id='username'
-//           placeholder='Username'
-//           name='username'
-//           className={`border-4 block border-purple-500 text-italics px-4 py-2 rounded-lg mb-4 focus:outline-none bg-opacity-75 placeholder-gray-500 capitalize ${
-//             errors.username ? 'border-red-500' : ''
-//           }`}
-//           value={formData.username}
-//           onChange={handleInputChange}
-//         />
-//         {errors.username && <p className='text-red-500'>{errors.username}</p>}
-//         <input
-//           type='password'
-//           id='password'
-//           placeholder='Password'
-//           name='password'
-//           className={`border-4 block border-purple-500 text-italics rounded-lg px-4 py-2 mb-4 focus:outline-none bg-opacity-75 placeholder-gray-500 capitalize ${
-//             errors.password ? 'border-red-500' : ''
-//           }`}
-//           value={formData.password}
-//           onChange={handleInputChange}
-//         />
-//         {errors.password && <p className='text-red-500'>{errors.password}</p>}
-//         <Button />
-//       </form>
-//     </div>
-//   );
-// }
-
-// export default Login;
